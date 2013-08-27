@@ -1,0 +1,152 @@
+{% extends 'base.txt' %}
+{% load extra_tags %}
+
+{% block style %}
+<style>
+body { 
+  font: 14px helvetica neue, helvetica, arial, sans-serif;
+}
+
+#cy {
+  height: 620px;
+  width: 620px;
+  border: 1px solid #CCCCCC;
+}
+
+</style>
+{% endblock %}
+
+{% block jscript %}
+{# cytoscape graph #}
+		<script type="text/javascript">
+
+			$('#cy').cytoscape({
+			  layout: {
+			     name: 'breadthfirst',
+				fit: true, // whether to fit the viewport to the graph
+				ready: undefined, // callback on layoutready
+				stop: undefined, // callback on layoutstop
+				directed: false, // whether the tree is directed downwards (or edges can point in any direction if false)
+				padding: 30, // padding on fit
+				circle: true, // put depths in concentric circles if true, put depths top down if false
+				roots: 'cleft palate' // the roots of the trees
+			  },
+			  
+
+
+			  style: cytoscape.stylesheet()
+			    .selector('node')
+			      .css({
+			        'shape': 'data(faveShape)',
+			        'width': 'mapData(weight, 40, 80, 20, 60)',
+			        'content': 'data(name)',
+			        'text-valign': 'center',
+			        'text-outline-width': 2,
+			        'text-outline-color': 'data(faveColor)',
+			        'background-color': 'data(faveColor)',
+			        'color': '#fff'
+			      })
+			    .selector(':selected')
+			      .css({
+			        'border-width': 3,
+			        'border-color': '#333'
+			      })
+			    .selector('edge')
+			      .css({
+			        'width': 'mapData(strength, 70, 100, 2, 6)',
+			        'target-arrow-shape': 'triangle',
+			        'source-arrow-shape': 'circle',
+			        'line-color': 'data(faveColor)',
+			        'source-arrow-color': 'data(faveColor)',
+			        'target-arrow-color': 'data(faveColor)'
+			      })
+			    .selector('edge.questionable')
+			      .css({
+			        'line-style': 'dotted',
+			        'target-arrow-shape': 'diamond'
+			      })
+			    .selector('.faded')
+			      .css({
+			        'opacity': 0.25,
+			        'text-opacity': 0
+			      })
+			    .selector('.human_phenotype')
+			      .css({
+			      	'background-color': '#255ab8',
+
+			      })
+			    .selector('.disease_ontology')
+			      .css({
+			      	'background-color': '#b73824',
+
+			      })
+
+
+			      ,
+			  
+			  elements: {
+			    nodes: [
+			    {% for N in NODES  %}
+			      { data: { id: '{{ N.0 }}', name: '{{ N.1 }} - {{ N.3 }}'}, classes: '{{ N.2 }}' },
+			    {% endfor %}
+
+			    ],
+			    edges: [
+
+			    {% for E in EDGES %}
+			      { data: { target: '{{ E.0 }}', source:'{{ E.1 }}'} },
+			     {% endfor %}
+
+			    ]
+			  },
+			  
+			  ready: function(){
+			    window.cy = this;
+			    
+			    // giddy up
+			  }
+			});
+
+		</script>
+{% endblock %}
+
+{% block content %}
+
+
+<div class='container'>
+<div class='row'>
+	<div class='span8'>
+	<div id="cy"></div>
+	</div>{# /span8 #}
+{{ exists }}
+<div class='span4'>
+	<div class='well well-small' style='height:600px;'>
+
+
+
+		{% for f in EDGES %}
+		
+		{% endfor %}
+		<br />
+
+		{% for f in NODES %}
+			{{ f }}<br /><br />
+		{% endfor %}
+
+		{{ whitelist }}
+
+
+	</div>{# /well #}
+</div>{# /span4 #}
+
+</div>{# /row #}
+
+</div>{# /container #}
+
+{% endblock %}
+
+
+
+
+
+

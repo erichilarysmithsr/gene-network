@@ -1,0 +1,90 @@
+{% block header %}
+{% load staticfiles %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en">
+  <head>
+    {# META #}
+    <meta charset="utf-8">
+    <title>{{ TITLE }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    {# STYLESHEETS - order matters #}
+    <link href="{% static 'bootstrap.min.css' %}" rel='stylesheet'>
+    {# custom styles on top of bootstrap that are site-wide #}
+    <link href="{% static 'style.css'%}" rel='stylesheet'>
+    {# Style block used for customizing individual templates as needed. #}
+      {% block style %}{% endblock %}
+
+    {# JS - order matters #}
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    {% if load_cytoscape %}
+    <script src="http://cytoscape.github.io/cytoscape.js/api/cytoscape.js-latest/cytoscape.min.js"></script>
+    {% endif %}
+    
+    <script src="{% static 'bootstrap.min.js' %}"></script>
+    {# Block for adding custom javascript to templates.. #}
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-static-top">
+      <div class="navbar-inner">
+          <a data-target=".nav-collapse" data-toggle="collapse" class="btn btn-navbar">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a href="#" class="brand">Project No-Name (Yet)</a>
+          <form method="POST" action="/network/" class='navbar-form pull-right'>
+            {% csrf_token %}
+            <input  name="q" value="{{request.POST.q}}" type="text" id='typeahead' class='input-large' data-provide="typeahead" placeholder="Search..." autocomplete="off" />
+            <button class='btn btn-primary' type='submit'>Search</button>
+          </form>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li {% if TITLE == "Home" %}class="active"{% endif %}><a href="#">Home</a></li>
+              <li {% if TITLE == "Ontology Browser" %}class="active"{% endif %}><a href="{% url 'browser' %}" >Ontology Browser</a></li>
+              <li><a href="#contact">Contact</a></li>
+            </ul>
+          </div>{# /Nav-collapse #}
+      </div>
+    </div>
+
+<div class='content'>{# Adds small amount of padding around edges #}
+{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block footer %}
+<hr>
+      <footer>
+        <p>Dan Cook!</p>
+      </footer>
+<script type="text/javascript">
+
+$(function(){
+
+
+$('#typeahead').typeahead({
+    minLength: 3,
+    source: function (query, process) {
+        return $.getJSON(
+            '{% url "cvterm_search" %}',
+            { query: query },
+            function (data) {
+                return process(data);
+            });
+    }
+
+});
+
+});
+
+</script>
+    {% block jscript %}{% endblock %}
+    </div>{# Closes Content #}
+  </body>
+</html>
+{% endblock %}

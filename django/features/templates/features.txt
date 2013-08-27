@@ -1,0 +1,74 @@
+{% extends 'base.txt' %}
+{% load extra_tags %}
+
+{% block style %}{% endblock %}
+
+{% block content %}
+
+<div class='container'>
+	<div class='row'>
+		<div class='span12'>
+
+			<form action='' method='GET'>
+			<input name='q' value='{{ request.GET.q }}' type='text' class='input-medium' />
+			</form>	
+
+			<table class='table table-striped'>
+				<thead>
+					<tr>
+						<th>Feature</th>
+						<th>Type</th>
+						<th>RefSeq</th>
+						<th>DB XRefs</th>
+						<th>Location</th>
+						<th>Associated CV Terms</th>
+						<th>Synonyms</th>
+					</tr>
+				</thead>
+				<tbody>
+			{% for result in results %}
+			<tr>
+				<td>
+					{{ result.name }}
+				</td>
+				<td>
+					{{ result.type }}
+				</td>
+				<td>
+					{% if result.dbxref.db.name == 'RefSeq' %}
+					<a href="http://www.ncbi.nlm.nih.gov/nuccore/{{ result.dbxref.accession }}">{{ result.dbxref.accession }}</a>{% endif %}
+				</td>
+				<td>
+					{% for xref in result.xrefs.all %}
+						{{ xref }}
+					{% endfor %}
+				</td>
+				<td>
+					{% for loc in result.feature_loc_set.all %}
+						{{ loc.srcfeature.name }} [{{loc.fmin}}:{{loc.fmax}}]
+					{% endfor %}
+				</td>
+				<td>
+					<ul>
+					{% for rel in result.feature_cvterm_set.all %}
+						<li>{{rel.cvterm.name }}</li>
+					{% endfor %}
+					</ul>
+				</td>
+				<td>
+					<ul>
+						{% for syn in result.synonym.all %}
+						<li>{{ syn.synonym.name }}</li>
+						{% endfor %}
+					</ul>
+			</tr>
+			{% endfor %}
+			</table>
+
+		</div>{# /span12 #}
+
+	</div>{# /row #}
+</div>{# /container #}
+
+{% endblock %}
+

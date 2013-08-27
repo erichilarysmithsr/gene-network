@@ -1,0 +1,150 @@
+# Copyright (C) 2006-2013 Alireza Savand, Django Foundation, Contributors
+# This file is distributed under the same license as the django-databrowse package.
+# FIRST AUTHOR <alireza.savand@gmail.com>, 2013.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-02-21 19:48+0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: Alireza Savand <alireza.savand@gmail.com>\n"
+"Language-Team: en_US <alireza.savand@gmail.com>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/databrowse/base.html:57 templates/databrowse/homepage.html:4
+msgid "Databrowse"
+msgstr ""
+
+#: templates/databrowse/calendar_day.html:4
+#: templates/databrowse/calendar_day.html:10
+#: templates/databrowse/calendar_month.html:4
+#: templates/databrowse/calendar_month.html:10
+#: templates/databrowse/calendar_year.html:4
+#: templates/databrowse/calendar_year.html:10
+#: templates/databrowse/fieldchoice_detail.html:4
+#: templates/databrowse/fieldchoice_detail.html:10
+msgid "with"
+msgstr ""
+
+#: templates/databrowse/calendar_day.html:8
+#: templates/databrowse/calendar_homepage.html:8
+#: templates/databrowse/calendar_main.html:8
+#: templates/databrowse/calendar_month.html:8
+#: templates/databrowse/calendar_year.html:8
+#: templates/databrowse/choice_detail.html:8
+#: templates/databrowse/choice_list.html:8
+#: templates/databrowse/fieldchoice_detail.html:8
+#: templates/databrowse/fieldchoice_homepage.html:7
+#: templates/databrowse/fieldchoice_list.html:8
+#: templates/databrowse/model_detail.html:8
+#: templates/databrowse/object_detail.html:8
+msgid "Home"
+msgstr ""
+
+#: templates/databrowse/calendar_day.html:8
+#: templates/databrowse/calendar_homepage.html:4
+#: templates/databrowse/calendar_homepage.html:8
+#: templates/databrowse/calendar_homepage.html:10
+#: templates/databrowse/calendar_main.html:8
+#: templates/databrowse/calendar_month.html:8
+#: templates/databrowse/calendar_year.html:8
+msgid "Calendars"
+msgstr ""
+
+#: templates/databrowse/calendar_day.html:8
+#: templates/databrowse/calendar_main.html:8
+#: templates/databrowse/calendar_month.html:8
+#: templates/databrowse/calendar_year.html:8
+#: templates/databrowse/choice_detail.html:8
+#: templates/databrowse/choice_list.html:8
+#: templates/databrowse/fieldchoice_detail.html:8
+#: templates/databrowse/fieldchoice_list.html:8
+msgid "By"
+msgstr ""
+
+#: templates/databrowse/calendar_day.html:10
+#: templates/databrowse/calendar_month.html:10
+msgid "on"
+msgstr ""
+
+#: templates/databrowse/calendar_homepage.html:14
+#: templates/databrowse/calendar_main.html:10
+#: templates/databrowse/choice_detail.html:4
+#: templates/databrowse/choice_detail.html:10
+#: templates/databrowse/choice_list.html:4
+#: templates/databrowse/choice_list.html:10
+#: templates/databrowse/fieldchoice_homepage.html:13
+#: templates/databrowse/fieldchoice_list.html:4
+#: templates/databrowse/fieldchoice_list.html:10
+msgid "by"
+msgstr ""
+
+#: templates/databrowse/calendar_main.html:4
+msgid "calendar"
+msgstr ""
+
+#: templates/databrowse/calendar_month.html:4
+#: templates/databrowse/calendar_year.html:4
+#: templates/databrowse/calendar_year.html:10
+msgid "in"
+msgstr ""
+
+#: templates/databrowse/fieldchoice_detail.html:8
+#: templates/databrowse/fieldchoice_homepage.html:7
+#: templates/databrowse/fieldchoice_list.html:8
+msgid "Fields"
+msgstr ""
+
+#: templates/databrowse/fieldchoice_homepage.html:4
+#: templates/databrowse/fieldchoice_homepage.html:9
+#, python-format
+msgid "Browsable fields in %(verbose_name)s"
+msgstr ""
+
+#: templates/databrowse/homepage.html:6
+msgid "homepage"
+msgstr ""
+
+#: templates/databrowse/homepage.html:17
+msgid "More"
+msgstr ""
+
+#: templates/databrowse/object_detail.html:21
+msgid "None"
+msgstr ""
+
+#: templates/databrowse/object_detail.html:29
+#, python-format
+msgid ""
+"Appears in \"%(related_field)s\" in the following %(verbose_name_plural)s"
+msgstr ""
+
+#: templates/databrowse/object_detail.html:37
+msgid "(None)"
+msgstr ""
+
+#: templates/databrowse/include/pagination.html:4
+#, python-format
+msgid "Page %(number)s of"
+msgstr ""
+
+#: templates/databrowse/include/pagination.html:6
+msgid "First"
+msgstr ""
+
+#: templates/databrowse/include/pagination.html:6
+msgid "Previous"
+msgstr ""
+
+#: templates/databrowse/include/pagination.html:6
+msgid "Next"
+msgstr ""
+
+#: templates/databrowse/include/pagination.html:15
+msgid "items per page"
+msgstr ""

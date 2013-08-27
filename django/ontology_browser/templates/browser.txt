@@ -1,0 +1,260 @@
+{% extends 'base.txt' %}
+{% load extra_tags %}
+
+
+{% block style %}
+<style type="text/css">
+body {
+  min-width:500px;
+}
+
+
+
+.tree li {
+    margin: 0px 0;
+  
+  list-style-type: none;
+    position: relative;
+  padding: 15px 5px 0px 5px;
+}
+
+.tree li::before{
+    content: '';
+  position: absolute; 
+    top: 0;
+  width: 1px; 
+    height: 100%;
+  right: auto; 
+    left: -20px;
+  border-left: 1px solid #ccc;
+    bottom: 50px;
+}
+.tree li::after{
+    content: '';
+  position: absolute; 
+    top: 30px; 
+  width: 25px; 
+    height: 20px;
+  right: auto; 
+    left: -20px;
+  border-top: 1px solid #ccc;
+}
+.tree li .term{
+  display: inline-block;
+  border: 1px solid #ccc;
+  padding: 5px 10px;
+  text-decoration: none;
+  color: #666;
+  font-family: arial, verdana, tahoma;
+  font-size: 12px;
+  min-width:150px;
+    border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+}
+
+/*Remove connectors before root*/
+.tree > ul > li::before, .tree > ul > li::after{
+  border: 0;
+}
+/*Remove connectors after last child*/
+.tree li:last-child::before{ 
+      height: 30px;
+}
+
+/*Time for some hover effects*/
+/*We will apply the hover effect the the lineage of the element also*/
+.tree li .term:hover, .tree li .term:hover+ul li .term {
+  background: #c8e4f8; 
+  color: #000; 
+  cursor: hand; 
+  cursor: pointer;
+}
+
+/*Connector styles on hover*/
+.tree li .term:hover+ul li::after, 
+.tree li .term:hover+ul li::before, 
+.tree li .term:hover+ul::before, 
+.tree li .term:hover+ul ul::before{
+  border-color:  #94a0b4; 
+}
+
+.definition_box {
+    position:fixed;
+    top:50px;
+    right:50px;
+    width:500px;
+    z-index: 1;
+}
+</style>
+{% endblock %}
+
+{% block jscript %}
+<script>
+// Ontology initial setup
+$('.ontology').show();
+$('.ontology > ul').hide();
+
+// Setup Definition box when an ontology is clicked.
+$('.ontology > div').click(function() {
+  $('.definition_box').fadeIn();
+  $('.definition_box > h4').text($(this).text());
+  $('.definition_box > small').text('');
+  $('.definition_box > .dbxref').html('');
+  });
+
+// Hide definition box until filled. 
+$('.definition_box').hide();
+
+
+$(".tree").on("mouseenter", ".term", function() {
+
+    // Set t variable for convenience.
+    t = $(this);
+
+    // Show definition box (on first click).
+    $('.definition_box').fadeIn();
+
+    // Clear background from all terms (reset)
+    $(".term").css('background','');
+
+    // Set selected background
+    t.css('background',"#CCFFCC")
+
+
+      if (t.attr('cvterm') != undefined) {
+      cvterm = t.attr('cvterm');
+      url = "{% url 'tree_req' %}" + cvterm + "/";
+
+    // Fetch JSON response and use to draw children
+      $.getJSON(url, function(json) {
+
+      //////////////////////////////////////
+      // Definition Box  - uses json.term //
+      //////////////////////////////////////  
+      
+      $('.definition_box > h4').text(t.text()); // Title is obtained from the box itself.
+      $('.definition_box > small').text(json.term.definition);
+      console.log(json);
+      p = json;
+      // Surround term with URL if available
+      if (json.term.urlprefix != null) {
+      $('.definition_box > .dbxref').html('<a href="' + json.term.urlprefix + '">' + json.term.db + ":" + json.term.accession + "</a>");
+      } else if (json.term.db != undefined) {
+        $('.definition_box > .dbxref').text(json.term.db + ":" + json.term.accession);
+      }
+
+      // Xrefs
+      xrefs = [];
+      $.each(json.term['xrefs'], function(key,val) {
+        xrefs.push(val.dbxref__db__name + ':' + val.dbxref__accession);
+      });
+      if (xrefs.length > 0) {
+        $('.xrefs').html("<li>" + xrefs.join('</li><li>') + "</li>");
+      }
+
+      /////////////////////////////////////////////
+      // Returned Children  - uses json.children //
+      /////////////////////////////////////////////  
+
+      if ( t.children('i').length > 0 && t.hasClass('child') == true && t.siblings('ul').children().length == 0) {
+      // add each child to the list.
+      children = [];
+      $.each(json['children'], function(key,val) {
+        plus_sign = '';
+        if (val.terminal == false) {
+          plus_sign = '<i class="icon-plus-sign "></i>';
+        }
+        children.push('<li><div class="term child" cvterm="' + val.cvterm + '">' + plus_sign + " " + val.title + '</div><ul></ul></li>');
+
+        t.siblings('ul').hide().html(children.join(''));
+        t.css('border','1px solid #A0B6C6');
+      });
+     
+    }
+    });
+
+    }
+    
+    });
+
+$(".tree").on("click",'.term',function() {
+
+      siblings = t.siblings('ul');
+      if (siblings.is(":visible")) {
+        siblings.slideUp('fast');
+        t.children('i').attr('class','icon-plus-sign');
+      } else {
+        siblings.slideDown('fast');
+        t.children('i').attr('class','icon-minus-sign');
+      }
+    
+  });
+
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+  <div class='row'>
+    <div class='span12'>
+      <form method="POST" action="/network/" class='form-inline'>
+        {% csrf_token %}
+        <input type="text" name='q' id='typeahead' class='input-large' data-provide="typeahead" placeholder="Search..." autocomplete="off" />
+        <button class='btn btn-primary' type='submit'>Search</button>
+      </form>
+    </div>{# Closes Span #}
+  </div>{# Closes Row #}
+  
+  <div class="row">
+    <div class="span12">
+
+
+      <div class="definition_box well well-small">
+        <h4 class="title"></h4>
+        <small class='definition'></small>
+        <div class='dbxref'></div>
+      <ul class='xrefs'></ul>
+      </div>{# Closes div.definition #}
+
+
+{% regroup roots by cv_id as roots_grouped %}
+{# Start with a list of ontologies #}
+<div class="tree">
+    <ul>
+      <li class='tree_root'>Ontologies<ul>
+
+       {% for root in roots_grouped %}
+       {# Check to see if ontology has any elements. #}
+          <li class='ontology'><div class='term' title='{{ root.grouper.definition|default_if_none:"" }}'>{% if root.list|length > 0 %}<i class='icon-plus-sign '></i> {% endif %}{{ root.grouper }}</div>
+            <ul>
+              {% for t in root.list %}
+                <li>
+                  {# Start def. element with definition data #}
+                   <div cvterm="{{ t.root_cvterm_id.cvterm_id }}" 
+                        title="{{ t.root_cvterm_id.definition|default_if_none:'' }}"
+                  {# Check to see if element is a root element #}
+                  {% if t.root_cvterm_id.cvterm_id in terminals %}
+                   {# Finish Div element with class and +/- sign #}
+                      class='term child muted'>{{ t.root_cvterm_id.name }}</div>
+                  {% else %}
+                      class='term child' ><i class='icon-plus-sign'></i> {{ t.root_cvterm_id.name }}</div>
+                  {% endif %}
+                  <ul></ul></li>
+              {% endfor %}
+            </ul>
+          </li>
+       {% endfor %}
+     </ul></li>
+    </ul>
+</div>{# Closes tree #}
+
+
+        </div>
+        
+
+
+
+      </div>{# Closes row #}
+</div>
+{% endblock %}
